@@ -6,13 +6,14 @@ output:
     toc: yes
     toc_float: yes
     theme: cerulean
+    keep_md: yes
 ---
 
-This is an example of the pipeline followed for the analysis in *"Unweaving the web: Polygenic influences on networks of psychopathology symptoms in childhood"*, focused on the network with the polygenic score for ADHD for demonstration purposes. All parts of the analysis were run via a computer cluster due to the computing power required. The results of this example can be found in pipeline_example.RData.
+This is an example of the pipeline followed for the analysis in *"Unweaving the web: Polygenic influences on networks of psychopathology symptoms in childhood"*, focused on the network with the polygenic score for ADHD for demonstration purposes. All parts of the analysis were run via a computer cluster due to the computing power required. The results of this example can be found in pipeline_example.RData in the [Github repo](https://github.com/giuliapiazza18/Unweaving-the-polygenic-web-pipeline).
 
 # Load packages and data
 
-Loading imputed and cleaned data from ALSPAC and TEDS (see paper for more details). Polygenic scores were all calculated with [this script](), which follows [this LDpred2 tutorial](https://privefl.github.io/bigsnpr/articles/LDpred2.html) (accessed in September 2022). The ADHD polygenic score was derived by effect sizes from [Demontis et al. (2019)](https://www.nature.com/articles/s41588-018-0269-7).
+Loading imputed and cleaned data from ALSPAC and TEDS (see paper for more details). Polygenic scores were all calculated with [this script](https://github.com/giuliapiazza18/Unweaving-the-polygenic-web-pipeline/blob/master/LDPred_ADHD.R), which follows [this LDpred2 tutorial](https://privefl.github.io/bigsnpr/articles/LDpred2.html) (accessed in September 2022). The ADHD polygenic score was derived by effect sizes from [Demontis et al. (2019)](https://www.nature.com/articles/s41588-018-0269-7).
 
 ```{r, echo = FALSE}
 alspac.location = "alspac_imputed_residuals.csv"
@@ -205,7 +206,7 @@ knitr::kable(compare("adhd original" = comb.model.adhd,
 
 # Plotting the network focusing on the polygenic score
 
-Here, I plot the network focusing on the polygenic score by placing it in the centre of the graph, using custom functions which can be found [here]().
+Here, I plot the network focusing on the polygenic score by placing it in the centre of the graph, using custom functions which can be found [here](https://github.com/giuliapiazza18/Unweaving-the-polygenic-web-pipeline).
 ```{r, fig.height=10, fig.width=10}
 
 # load networks and legend ----
@@ -233,7 +234,7 @@ avglay = avglay, curve.matrix = curve.adhd)
 
 
 ```{r, echo = FALSE}
-rm(alspac.data, alspac.location, teds.data, teds.location, ALSPAC, TEDS)
+rm(alspac.data, alspac.location, teds.data, teds.location, ALSPAC, TEDS, comb.data)
 save.image("pipeline_example.RData")
 ```
 
