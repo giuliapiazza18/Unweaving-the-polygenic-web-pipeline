@@ -1,0 +1,12 @@
+.Rproj.user
+.Rhistory
+.Rdata
+.httr-oauth
+.DS_Store
+teds_imputed_residuals_ld.csv
+alspac_imputed_residuals.csv
+pipeline_example_files
+pipeline_example_cache
+adhd.boot.red.RData
+CNA_TEDS_ld.html
+alspac_networks.RData
