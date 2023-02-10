@@ -1,4 +1,5 @@
 # Script to calculate the polygenic score for ADHD (Demontis et al 2019) with LDPred2; based on https://privefl.github.io/bigsnpr/articles/LDpred2.html
+# Giulia Piazza
 
 library(data.table)
 library(magrittr)
@@ -20,12 +21,12 @@ info <- readRDS(runonce::download_file("https://ndownloader.figshare.com/files/2
 sumstats <- sumstats[sumstats$rsid%in% info$rsid,]
 
 
-# load bed file, creaete .rds and attach to session
+# load bed file, create .rds and attach to session
 obj.bigSNP <- snp_attach("1000G_all_common_afterQC_children.rds")
 
 # get useful aliases
 G2   <- obj.bigSNP$genotypes
-G <- snp_fastImputeSimple(G2)
+G <- snp_fastImputeSimple(G2) # impute for better performance
 
 
 CHR <- obj.bigSNP$map$chromosome
@@ -37,13 +38,13 @@ map <- setNames(obj.bigSNP$map[-3], c("chr", "rsid", "pos", "a1", "a0"))
 df_beta <- snp_match(sumstats, map, strand_flip = FALSE)
 df_beta <- as_tibble(df_beta)
 
-# compute LD reference from data with 3 cM window [genome-wide, on QCd data] ----
+# compute LD reference from data  ----
 # - get genetic position in cM using function
 POS2 <- snp_asGeneticPos(CHR, POS)
 
 # - compute correlation between variants per chr
 # - compute LD scores (not just corr matrix, need to compute scores)
-# - convert matrix to be stored on disk to parallelize (more efficient; request like 60GB) as_SFBM
+# - convert matrix to be stored on disk
 
 # open a temporary file
 tmp <- tempfile(tmpdir = "tmp-data")

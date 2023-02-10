@@ -1,7 +1,9 @@
 .Rproj.user
+.Rproj
 .Rhistory
 .Rdata
 .httr-oauth
 .DS_Store
 teds_imputed_residuals_ld.csv
 alspac_imputed_residuals.csv
+pipeline_example_cache/html 

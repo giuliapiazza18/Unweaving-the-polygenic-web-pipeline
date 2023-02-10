@@ -1517,13 +1517,15 @@ the polygenic web</h1>
 
 
 <p>This is an example of the pipeline followed for the analysis in
-<em>“Unweaving the web: Polygenic influences on networks of
-psychopathology symptoms in childhood”</em>, focused on the network with
-the polygenic score for ADHD for demonstration purposes. All parts of
-the analysis were run via a computer cluster due to the computing power
-required. The results of this example can be found in
-pipeline_example.RData in the <a href="https://github.com/giuliapiazza18/Unweaving-the-polygenic-web-pipeline">Github
+<strong>“Unweaving the web: Polygenic influences on networks of
+psychopathology symptoms in childhood”</strong>. The example is focused
+only on the network with the polygenic score for ADHD for demonstration
+purposes. All parts of the analysis were run via a computer cluster due
+to the computing power required. The results of this example can be
+found in pipeline_example.RData in this <a href="https://github.com/giuliapiazza18/Unweaving-the-polygenic-web-pipeline">Github
 repo</a>.</p>
+<p>The preregistration of the confirmatory analysis of this project can
+be found <a href="https://osf.io/7y2g8">here</a> in the respective <a href="https://osf.io/28ehr/">OSF project</a>.</p>
 <div id="load-packages-and-data" class="section level1">
 <h1>Load packages and data</h1>
 <p>Loading imputed and cleaned data from ALSPAC and TEDS (see paper for
@@ -1631,9 +1633,6 @@ frame with ALSPAC and TEDS data, with a column indicating the cohort. I
 then use the package ‘psychonetrics’ to run a model where edge weights
 in ALSPAC and TEDS are set to be equal, and compare it to a model where
 they are set free to vary.</p>
-<p>Overall, model fit for the constrained model is good based on
-standard fit indices. When compared to the free edges model, it is
-preferred by fit indices that penalise model complexity (BIC).</p>
 <pre class="r"><code>alspac.data = ALSPAC %&gt;% dplyr::select(selection, BMI.ld:ANX.P.ld, ADHD.ld) # create dataframe with relevant vars for alspac
 colnames(alspac.data) = c(selection,  &quot;BMI&quot;,  &quot;EA&quot;,   &quot;DEP&quot;, &quot;ANX&quot;,  &quot;ADHD&quot;)
 
@@ -1755,19 +1754,19 @@ adhd.model.3 = comb.data %&gt;% dplyr::select(DEP.2:HYP.5, ADHD, group) %&gt;%
   ggm(., estimator = &quot;FIML&quot;, omega = adhd.structure.3, groups = &quot;group&quot;) %&gt;% 
   groupequal(&quot;omega&quot;) %&gt;% runmodel
   
-knitr::kable(compare(&quot;adhd original&quot; = comb.model.adhd,
-&quot;adhd no pgs&quot; = adhd.model.3), row.names = FALSE)</code></pre>
+knitr::kable(compare(&quot;original network&quot; = comb.model.adhd,
+&quot;network with no pgs edges&quot; = adhd.model.3), row.names = FALSE)</code></pre>
 <table>
 <colgroup>
-<col width="17%" />
-<col width="6%" />
+<col width="27%" />
+<col width="5%" />
+<col width="9%" />
+<col width="7%" />
+<col width="10%" />
+<col width="9%" />
 <col width="11%" />
 <col width="8%" />
-<col width="12%" />
-<col width="11%" />
-<col width="13%" />
-<col width="9%" />
-<col width="9%" />
+<col width="8%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -1784,7 +1783,7 @@ knitr::kable(compare(&quot;adhd original&quot; = comb.model.adhd,
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">adhd original</td>
+<td align="left">original network</td>
 <td align="right">1126</td>
 <td align="right">972567.4</td>
 <td align="right">975125</td>
@@ -1795,7 +1794,7 @@ knitr::kable(compare(&quot;adhd original&quot; = comb.model.adhd,
 <td align="right">NA</td>
 </tr>
 <tr class="even">
-<td align="left">adhd no pgs</td>
+<td align="left">network with no pgs edges</td>
 <td align="right">1128</td>
 <td align="right">972701.9</td>
 <td align="right">975245</td>
@@ -1814,7 +1813,7 @@ knitr::kable(compare(&quot;adhd original&quot; = comb.model.adhd,
 polygenic score at a time, for all edges connected to the polygenic
 score. Here, for every edge connected to the ADHD polygenic score in the
 original network (edges connecting nodes HYP.3 and COND.4), I create a
-model where they are set to zero with a function in a combined dataset
+model where they are set to zero with a function, in a combined dataset
 of TEDS and ALSPAC. I then compare both models to the original network
 model.</p>
 <pre class="r"><code># Function to set ONE edge connecting the PGS to zero progressively
@@ -1838,19 +1837,19 @@ model4 = function(alspac.structure,node1,node2) {
 
 ## HYP.3
 adhd.model.4.HYP = model4(adhd.structure,&quot;ADHD&quot;, &quot;HYP.3&quot;)
-knitr::kable(compare(&quot;adhd original&quot; = comb.model.adhd,
-&quot;no edge adhd-hyp&quot; = adhd.model.4.HYP), row.names = FALSE)</code></pre>
+knitr::kable(compare(&quot;original network&quot; = comb.model.adhd,
+&quot;without edge adhd-hyp3&quot; = adhd.model.4.HYP), row.names = FALSE)</code></pre>
 <table>
 <colgroup>
-<col width="19%" />
+<col width="25%" />
 <col width="5%" />
+<col width="9%" />
+<col width="9%" />
 <col width="10%" />
-<col width="10%" />
+<col width="9%" />
 <col width="11%" />
-<col width="10%" />
-<col width="12%" />
-<col width="9%" />
-<col width="9%" />
+<col width="8%" />
+<col width="8%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -1867,7 +1866,7 @@ knitr::kable(compare(&quot;adhd original&quot; = comb.model.adhd,
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">adhd original</td>
+<td align="left">original network</td>
 <td align="right">1126</td>
 <td align="right">972567.4</td>
 <td align="right">975125.0</td>
@@ -1878,7 +1877,7 @@ knitr::kable(compare(&quot;adhd original&quot; = comb.model.adhd,
 <td align="right">NA</td>
 </tr>
 <tr class="even">
-<td align="left">no edge adhd-hyp</td>
+<td align="left">without edge adhd-hyp3</td>
 <td align="right">1127</td>
 <td align="right">972650.6</td>
 <td align="right">975200.9</td>
@@ -1892,19 +1891,19 @@ knitr::kable(compare(&quot;adhd original&quot; = comb.model.adhd,
 </table>
 <pre class="r"><code>## COND.4
 adhd.model.4.COND= model4(adhd.structure,&quot;ADHD&quot;, &quot;COND.4&quot;)
-knitr::kable(compare(&quot;adhd original&quot; = comb.model.adhd,
-&quot;no edge adhd-cond&quot; = adhd.model.4.COND), row.names = FALSE)</code></pre>
-<table style="width:100%;">
+knitr::kable(compare(&quot;original network&quot; = comb.model.adhd,
+&quot;without edge adhd-cond4&quot; = adhd.model.4.COND), row.names = FALSE)</code></pre>
+<table>
 <colgroup>
-<col width="21%" />
+<col width="26%" />
 <col width="5%" />
+<col width="9%" />
+<col width="7%" />
 <col width="10%" />
-<col width="8%" />
-<col width="11%" />
-<col width="10%" />
+<col width="9%" />
 <col width="12%" />
-<col width="9%" />
-<col width="9%" />
+<col width="8%" />
+<col width="8%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -1921,7 +1920,7 @@ knitr::kable(compare(&quot;adhd original&quot; = comb.model.adhd,
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">adhd original</td>
+<td align="left">original network</td>
 <td align="right">1126</td>
 <td align="right">972567.4</td>
 <td align="right">975125</td>
@@ -1932,7 +1931,7 @@ knitr::kable(compare(&quot;adhd original&quot; = comb.model.adhd,
 <td align="right">NA</td>
 </tr>
 <tr class="even">
-<td align="left">no edge adhd-cond</td>
+<td align="left">without edge adhd-cond4</td>
 <td align="right">1127</td>
 <td align="right">972591.6</td>
 <td align="right">975142</td>
@@ -1970,7 +1969,7 @@ them to a model where they are set to be equal.</p>
 
 # set edges connecting the PGS to free to vary, lift equality constrains
 adhd.model.5.HYP &lt;- model5(adhd.structure, &quot;ADHD&quot;, &quot;HYP.3&quot;, comb.model.adhd)
-knitr::kable(compare(&quot;adhd original&quot; = comb.model.adhd, 
+knitr::kable(compare(&quot;original network&quot; = comb.model.adhd, 
 &quot;free edge adhd-hyp3&quot; = adhd.model.5.HYP), row.names = FALSE)</code></pre>
 <table>
 <colgroup>
@@ -2010,7 +2009,7 @@ knitr::kable(compare(&quot;adhd original&quot; = comb.model.adhd,
 <td align="right">NA</td>
 </tr>
 <tr class="even">
-<td align="left">adhd original</td>
+<td align="left">original network</td>
 <td align="right">1126</td>
 <td align="right">972567.4</td>
 <td align="right">975125.0</td>
@@ -2023,7 +2022,7 @@ knitr::kable(compare(&quot;adhd original&quot; = comb.model.adhd,
 </tbody>
 </table>
 <pre class="r"><code>adhd.model.5.COND &lt;- model5(adhd.structure, &quot;ADHD&quot;, &quot;COND.4&quot;, comb.model.adhd)
-knitr::kable(compare(&quot;adhd original&quot; = comb.model.adhd, 
+knitr::kable(compare(&quot;original network&quot; = comb.model.adhd, 
 &quot;free edge adhd-cond4&quot; = adhd.model.5.COND), row.names = FALSE)</code></pre>
 <table>
 <colgroup>
@@ -2063,7 +2062,7 @@ knitr::kable(compare(&quot;adhd original&quot; = comb.model.adhd,
 <td align="right">NA</td>
 </tr>
 <tr class="even">
-<td align="left">adhd original</td>
+<td align="left">original network</td>
 <td align="right">1126</td>
 <td align="right">972567.4</td>
 <td align="right">975125.0</td>
