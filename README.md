@@ -1,13 +1,22 @@
+---
+title: "Example of analysis pipeline - Unweaving the polygenic web"
+author: "Giulia Piazza"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+    theme: cerulean
+    keep_md: yes
+---
 
-# Example of analysis pipeline - Unweaving the polygenic web
-## Giulia Piazza, January 2023
+This is an example of the pipeline followed for the analysis in **"Unweaving the web: Polygenic influences on networks of psychopathology symptoms in childhood"**. The example is focused only on the network with the polygenic score for ADHD for demonstration purposes. All parts of the analysis were run via a computer cluster due to the computing power required. The results of this example can be found in pipeline_example.RData in this [Github repo](https://github.com/giuliapiazza18/Unweaving-the-polygenic-web-pipeline).
 
-
-This is an example of the pipeline followed for the analysis in *"Unweaving the web: Polygenic influences on networks of psychopathology symptoms in childhood"*, focused on the network with the polygenic score for ADHD for demonstration purposes. All parts of the analysis were run via a computer cluster due to the computing power required. The results of this example can be found in pipeline_example.RData in the [Github repo](https://github.com/giuliapiazza18/Unweaving-the-polygenic-web-pipeline).
+The preregistration of the confirmatory analysis of this project can be found [here](https://osf.io/7y2g8) in the respective [OSF project](https://osf.io/28ehr/).
 
 # Load packages and data
 
 Loading imputed and cleaned data from ALSPAC and TEDS (see paper for more details). Polygenic scores were all calculated with [this script](https://github.com/giuliapiazza18/Unweaving-the-polygenic-web-pipeline/blob/master/LDPred_ADHD.R), which follows [this LDpred2 tutorial](https://privefl.github.io/bigsnpr/articles/LDpred2.html) (accessed in September 2022). The ADHD polygenic score was derived by effect sizes from [Demontis et al. (2019)](https://www.nature.com/articles/s41588-018-0269-7).
+
 
 
 
@@ -125,8 +134,6 @@ adhd.model %>% fit() # inspect model fit
 
 Model 2 involves multi-group testing and assesses whether edges have comparable weights in ALSPAC and TEDS. Here, I create a combined data frame with ALSPAC and TEDS data, with a column indicating the cohort. I then use the package 'psychonetrics' to run a model where edge weights in ALSPAC and TEDS are set to be equal, and compare it to a model where they are set free to vary.
 
-Overall, model fit for the constrained model is good based on standard fit indices. When compared to the free edges model, it is preferred by fit indices that penalise model complexity (BIC).
-
 
 ```r
 alspac.data = ALSPAC %>% dplyr::select(selection, BMI.ld:ANX.P.ld, ADHD.ld) # create dataframe with relevant vars for alspac
@@ -214,20 +221,20 @@ adhd.model.3 = comb.data %>% dplyr::select(DEP.2:HYP.5, ADHD, group) %>%
   ggm(., estimator = "FIML", omega = adhd.structure.3, groups = "group") %>% 
   groupequal("omega") %>% runmodel
   
-knitr::kable(compare("adhd original" = comb.model.adhd,
-"adhd no pgs" = adhd.model.3), row.names = FALSE)
+knitr::kable(compare("original network" = comb.model.adhd,
+"network with no pgs edges" = adhd.model.3), row.names = FALSE)
 ```
 
 
 
-|model         |   DF|      AIC|    BIC|     RMSEA|    Chisq| Chisq_diff| DF_diff| p_value|
-|:-------------|----:|--------:|------:|---------:|--------:|----------:|-------:|-------:|
-|adhd original | 1126| 972567.4| 975125| 0.0195041| 3298.985|         NA|      NA|      NA|
-|adhd no pgs   | 1128| 972701.9| 975245| 0.0200892| 3437.405|   138.4199|       2|       0|
+|model                     |   DF|      AIC|    BIC|     RMSEA|    Chisq| Chisq_diff| DF_diff| p_value|
+|:-------------------------|----:|--------:|------:|---------:|--------:|----------:|-------:|-------:|
+|original network          | 1126| 972567.4| 975125| 0.0195041| 3298.985|         NA|      NA|      NA|
+|network with no pgs edges | 1128| 972701.9| 975245| 0.0200892| 3437.405|   138.4199|       2|       0|
 
 ## Model 4
 
-Model 4 tests the significance of a single edge connected to the ADHD polygenic score at a time, for all edges connected to the polygenic score. Here, for every edge connected to the ADHD polygenic score in the original network (edges connecting nodes HYP.3 and COND.4), I create a model where they are set to zero with a function in a combined dataset of TEDS and ALSPAC. I then compare both models to the original network model. 
+Model 4 tests the significance of a single edge connected to the ADHD polygenic score at a time, for all edges connected to the polygenic score. Here, for every edge connected to the ADHD polygenic score in the original network (edges connecting nodes HYP.3 and COND.4), I create a model where they are set to zero with a function, in a combined dataset of TEDS and ALSPAC. I then compare both models to the original network model. 
 
 
 ```r
@@ -252,30 +259,30 @@ model4 = function(alspac.structure,node1,node2) {
 
 ## HYP.3
 adhd.model.4.HYP = model4(adhd.structure,"ADHD", "HYP.3")
-knitr::kable(compare("adhd original" = comb.model.adhd,
-"no edge adhd-hyp" = adhd.model.4.HYP), row.names = FALSE)
+knitr::kable(compare("original network" = comb.model.adhd,
+"without edge adhd-hyp3" = adhd.model.4.HYP), row.names = FALSE)
 ```
 
 
 
-|model            |   DF|      AIC|      BIC|     RMSEA|    Chisq| Chisq_diff| DF_diff| p_value|
-|:----------------|----:|--------:|--------:|---------:|--------:|----------:|-------:|-------:|
-|adhd original    | 1126| 972567.4| 975125.0| 0.0195041| 3298.985|         NA|      NA|      NA|
-|no edge adhd-hyp | 1127| 972650.6| 975200.9| 0.0198693| 3384.125|   85.13986|       1|       0|
+|model                  |   DF|      AIC|      BIC|     RMSEA|    Chisq| Chisq_diff| DF_diff| p_value|
+|:----------------------|----:|--------:|--------:|---------:|--------:|----------:|-------:|-------:|
+|original network       | 1126| 972567.4| 975125.0| 0.0195041| 3298.985|         NA|      NA|      NA|
+|without edge adhd-hyp3 | 1127| 972650.6| 975200.9| 0.0198693| 3384.125|   85.13986|       1|       0|
 
 ```r
 ## COND.4
 adhd.model.4.COND= model4(adhd.structure,"ADHD", "COND.4")
-knitr::kable(compare("adhd original" = comb.model.adhd,
-"no edge adhd-cond" = adhd.model.4.COND), row.names = FALSE)
+knitr::kable(compare("original network" = comb.model.adhd,
+"without edge adhd-cond4" = adhd.model.4.COND), row.names = FALSE)
 ```
 
 
 
-|model             |   DF|      AIC|    BIC|     RMSEA|    Chisq| Chisq_diff| DF_diff| p_value|
-|:-----------------|----:|--------:|------:|---------:|--------:|----------:|-------:|-------:|
-|adhd original     | 1126| 972567.4| 975125| 0.0195041| 3298.985|         NA|      NA|      NA|
-|no edge adhd-cond | 1127| 972591.6| 975142| 0.0196081| 3325.169|   26.18379|       1|   3e-07|
+|model                   |   DF|      AIC|    BIC|     RMSEA|    Chisq| Chisq_diff| DF_diff| p_value|
+|:-----------------------|----:|--------:|------:|---------:|--------:|----------:|-------:|-------:|
+|original network        | 1126| 972567.4| 975125| 0.0195041| 3298.985|         NA|      NA|      NA|
+|without edge adhd-cond4 | 1127| 972591.6| 975142| 0.0196081| 3325.169|   26.18379|       1|   3e-07|
 
 ## Model 5
 
@@ -302,7 +309,7 @@ model5 = function(alspac.structure,node1,node2,eq.model) {
 
 # set edges connecting the PGS to free to vary, lift equality constrains
 adhd.model.5.HYP <- model5(adhd.structure, "ADHD", "HYP.3", comb.model.adhd)
-knitr::kable(compare("adhd original" = comb.model.adhd, 
+knitr::kable(compare("original network" = comb.model.adhd, 
 "free edge adhd-hyp3" = adhd.model.5.HYP), row.names = FALSE)
 ```
 
@@ -311,11 +318,11 @@ knitr::kable(compare("adhd original" = comb.model.adhd,
 |model               |   DF|      AIC|      BIC|     RMSEA|    Chisq| Chisq_diff| DF_diff|   p_value|
 |:-------------------|----:|--------:|--------:|---------:|--------:|----------:|-------:|---------:|
 |free edge adhd-hyp3 | 1125| 972569.3| 975134.1| 0.0195166| 3298.820|         NA|      NA|        NA|
-|adhd original       | 1126| 972567.4| 975125.0| 0.0195041| 3298.985|  0.1651108|       1| 0.6844941|
+|original network    | 1126| 972567.4| 975125.0| 0.0195041| 3298.985|  0.1651108|       1| 0.6844941|
 
 ```r
 adhd.model.5.COND <- model5(adhd.structure, "ADHD", "COND.4", comb.model.adhd)
-knitr::kable(compare("adhd original" = comb.model.adhd, 
+knitr::kable(compare("original network" = comb.model.adhd, 
 "free edge adhd-cond4" = adhd.model.5.COND), row.names = FALSE)
 ```
 
@@ -324,7 +331,7 @@ knitr::kable(compare("adhd original" = comb.model.adhd,
 |model                |   DF|      AIC|      BIC|     RMSEA|    Chisq| Chisq_diff| DF_diff|   p_value|
 |:--------------------|----:|--------:|--------:|---------:|--------:|----------:|-------:|---------:|
 |free edge adhd-cond4 | 1125| 972569.1| 975133.9| 0.0195156| 3298.608|         NA|      NA|        NA|
-|adhd original        | 1126| 972567.4| 975125.0| 0.0195041| 3298.985|  0.3777227|       1| 0.5388245|
+|original network     | 1126| 972567.4| 975125.0| 0.0195041| 3298.985|  0.3777227|       1| 0.5388245|
 
 # Plotting the network focusing on the polygenic score
 
