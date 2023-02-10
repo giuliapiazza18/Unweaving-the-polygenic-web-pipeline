@@ -59,7 +59,7 @@ adhd.network <- ALSPAC %>%
 
 Plotting the resulting network with the package 'qgraph' for a quick preliminary visualisation. 
 
-```{r}
+```{r plot-raw}
 qgraph(adhd.network$graph, layout = "spring", theme = "colorblind")
 ```
 
@@ -208,7 +208,7 @@ knitr::kable(compare("original network" = comb.model.adhd,
 # Plotting the network focusing on the polygenic score
 
 Here, I plot the network focusing on the polygenic score by placing it in the centre of the graph, using custom functions which can be found [here](https://github.com/giuliapiazza18/Unweaving-the-polygenic-web-pipeline).
-```{r, fig.height=10, fig.width=10}
+```{r plot-centre, fig.height=10, fig.width=10}
 
 # load networks and legend ----
 quest.sub = read_excel("mfq_sdq_key_11_subscale.xlsx")
