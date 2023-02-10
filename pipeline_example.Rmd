@@ -41,7 +41,7 @@ TEDS = read.csv(teds.location)
 
 Estimating the ADHD polygenic score network in ALSPAC with unregularised model search with the package 'bootnet'.
 
-```{r, warning=FALSE, message=FALSE, cache=TRUE}
+```{r, warning=FALSE, message=FALSE, cache=FALSE}
 selection = c("DEP.2","DEP.3", "DEP.5","DEP.6", "DEP.7",
               "DEP.8","DEP.9","DEP.10","DEP.11","DEP.12","DEP.13","PRO.1", 
               "HYP.1","EMO.1","PRO.2","COND.1","PEER.1","COND.2","EMO.2", 
@@ -78,7 +78,7 @@ adhd.boot <- bootnet(adhd.network,  nBoots = 1000, default = "ggmModSelect", typ
 
 Model 1 tests the fit of the network estimated in ALSPAC in TEDS. Here, I take the adjacency matrix of the ADHD polygenic score network calculated above (a matrix with ones/zeros for presence/absence of edges) and test its fit in TEDS data.
 
-```{r, cache=TRUE}
+```{r, cache=FALSE}
 # extract structure
 adhd.structure = 1*(adhd.network$graph != 0)
 
@@ -94,7 +94,7 @@ adhd.model %>% fit() # inspect model fit
 
 Model 2 involves multi-group testing and assesses whether edges have comparable weights in ALSPAC and TEDS. Here, I create a combined data frame with ALSPAC and TEDS data, with a column indicating the cohort. I then use the package 'psychonetrics' to run a model where edge weights in ALSPAC and TEDS are set to be equal, and compare it to a model where they are set free to vary.
 
-```{r, message=FALSE, warning=FALSE, cache=TRUE}
+```{r, message=FALSE, warning=FALSE, cache=FALSE}
 alspac.data = ALSPAC %>% dplyr::select(selection, BMI.ld:ANX.P.ld, ADHD.ld) # create dataframe with relevant vars for alspac
 colnames(alspac.data) = c(selection,  "BMI",  "EA",   "DEP", "ANX",  "ADHD")
 
@@ -123,7 +123,7 @@ knitr::kable(compare("free" = free.model.adhd,
 
 Model 3 tests the significance of all edges connected to the polygenic score for ADHD at the same time. Here, I compare a model where all edges between the polygenic score for ADHD are set to zero to the original network model in a combined dataset of TEDS and ALSPAC. 
 
-```{r, cache=TRUE}
+```{r, cache=FALSE}
 # set ALL edges connecting the PGS to zero
 adhd.structure.3 = adhd.structure
 adhd.structure.3[37,] = adhd.structure.3[,37] = 0
@@ -141,7 +141,7 @@ knitr::kable(compare("original network" = comb.model.adhd,
 
 Model 4 tests the significance of a single edge connected to the ADHD polygenic score at a time, for all edges connected to the polygenic score. Here, for every edge connected to the ADHD polygenic score in the original network (edges connecting nodes HYP.3 and COND.4), I create a model where they are set to zero with a function, in a combined dataset of TEDS and ALSPAC. I then compare both models to the original network model. 
 
-```{r, cache=TRUE}
+```{r, cache=FALSE}
 # Function to set ONE edge connecting the PGS to zero progressively
 model4 = function(alspac.structure,node1,node2) {
   
@@ -178,7 +178,7 @@ knitr::kable(compare("original network" = comb.model.adhd,
 Lastly, model 5 tests whether ALSPAC and TEDS have comparable edge weights in a single edge connected to the ADHD polygenic score. Here, I create model where equality constrains are lifted between the edges connecting the polygenic score to nodes HYP.3 and COND.4, and compare them to a model where they are set to be equal.
 
 
-```{r, cache=TRUE}
+```{r, cache=FALSE}
 model5 = function(alspac.structure,node1,node2,eq.model) {
   
   # alspac.structure = structure of alspac network
