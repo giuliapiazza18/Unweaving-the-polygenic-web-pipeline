@@ -1,10 +1,9 @@
 .Rproj.user
-.Rproj
+*.Rproj
 .Rhistory
 .Rdata
 .httr-oauth
 .DS_Store
 teds_imputed_residuals_ld.csv
 alspac_imputed_residuals.csv
-"Unweaving the polygenic web pipeline.Rproj"
 
