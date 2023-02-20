@@ -1,7 +1,6 @@
 # Example of analysis pipeline - Unweaving the polygenic web
 Giulia Piazza
 
-
 This is an example of the pipeline followed for the analysis in **"Unweaving the web: Polygenic influences on networks of psychopathology symptoms"**. The example is focused only on the network with the polygenic score for ADHD for demonstration purposes. All parts of the analysis were run via a computer cluster due to the computing power required. Although this example is not directly reproducible (as it requires raw data), the resulting objects can be found in pipeline_example.RData in this [Github repo](https://github.com/giuliapiazza18/Unweaving-the-polygenic-web-pipeline).
 
 The preregistration of the confirmatory analysis of this project can be found [here](https://osf.io/7y2g8) in the respective [OSF project](https://osf.io/28ehr/).

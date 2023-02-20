@@ -237,6 +237,7 @@ plot(graph)
 
 ```{r, echo = FALSE}
 rm(alspac.data, alspac.location, teds.data, teds.location, ALSPAC, TEDS, comb.data)
+adhd.network$data = NULL
 save.image("pipeline_example.RData")
 ```
 
