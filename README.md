@@ -2,16 +2,13 @@
 Giulia Piazza
 
 
-This is an example of the pipeline followed for the analysis in **"Unweaving the web: Polygenic influences on networks of psychopathology symptoms in childhood"**. The example is focused only on the network with the polygenic score for ADHD for demonstration purposes. All parts of the analysis were run via a computer cluster due to the computing power required. The results of this example can be found in pipeline_example.RData in this [Github repo](https://github.com/giuliapiazza18/Unweaving-the-polygenic-web-pipeline).
+This is an example of the pipeline followed for the analysis in **"Unweaving the web: Polygenic influences on networks of psychopathology symptoms"**. The example is focused only on the network with the polygenic score for ADHD for demonstration purposes. All parts of the analysis were run via a computer cluster due to the computing power required. Although this example is not directly reproducible (as it requires raw data), the resulting objects can be found in pipeline_example.RData in this [Github repo](https://github.com/giuliapiazza18/Unweaving-the-polygenic-web-pipeline).
 
 The preregistration of the confirmatory analysis of this project can be found [here](https://osf.io/7y2g8) in the respective [OSF project](https://osf.io/28ehr/).
 
 # Load packages and data
 
-Loading imputed and cleaned data from ALSPAC and TEDS (see paper for more details). Polygenic scores were all calculated with [this script](https://github.com/giuliapiazza18/Unweaving-the-polygenic-web-pipeline/blob/master/LDPred_ADHD.R), which follows [this LDpred2 tutorial](https://privefl.github.io/bigsnpr/articles/LDpred2.html) (accessed in September 2022). The ADHD polygenic score was derived by effect sizes from [Demontis et al. (2019)](https://www.nature.com/articles/s41588-018-0269-7).
-
-
-
+Loading imputed and cleaned data from ALSPAC and TEDS (see paper for more details). Polygenic scores were all calculated with [this script](https://github.com/giuliapiazza18/Unweaving-the-polygenic-web-pipeline/blob/master/LDPred_ADHD.R), which follows [this LDpred2 tutorial](https://privefl.github.io/bigsnpr/articles/LDpred2.html) (accessed in September 2022). The ADHD polygenic score was derived from effect sizes in [Demontis et al. (2019)](https://www.nature.com/articles/s41588-018-0269-7).
 
 
 ```r
@@ -20,11 +17,11 @@ library(bootnet)
 library(dplyr)
 library(psychonetrics)
 library(readxl)
-
-ALSPAC = as.data.frame(read.csv(alspac.location))
-
-TEDS = read.csv(teds.location)
 ```
+
+
+
+
 
 
 # Estimate network in ALSPAC
@@ -42,7 +39,7 @@ selection = c("DEP.2","DEP.3", "DEP.5","DEP.6", "DEP.7",
 
 adhd.network <- ALSPAC %>%
   dplyr::select(selection, ADHD.ld) %>%
-  estimateNetwork(., default = "ggmModSelect", stepwise = TRUE) # estimate network with 'ggmModSelect'
+  estimateNetwork(., default = "ggmModSelect", stepwise = TRUE) # estimate network with 'ggmModSelect', selected nodes and ADHD PRS calculated with LDPred2
 ```
 
 # Plot network
@@ -58,7 +55,7 @@ qgraph(adhd.network$graph, layout = "spring", theme = "colorblind")
 
 # Non-parametric bootstraps
 
-Calculating non-parametric bootstraps (time intensive) with 'bootnet'.
+Calculating non-parametric bootstraps (this is time intensive) with 'bootnet'.
 
 
 ```r
@@ -141,7 +138,7 @@ comb.data = rbind(alspac.data, teds.data) # create dataset of combined teds and 
 
 comb.model.adhd <- comb.data %>% dplyr::select(DEP.2:HYP.5, ADHD, group) %>% 
   ggm(., estimator = "FIML", omega = adhd.structure, groups = "group") %>% 
-  groupequal("omega") %>% runmodel # run a model where edges are free to vary between alspac and teds
+  groupequal("omega") %>% runmodel # run a model where edges are equal in alspac and teds
 
 comb.model.adhd.fit = comb.model.adhd %>% fit()
 ```
@@ -336,7 +333,7 @@ quest.sub = read_excel("mfq_sdq_key_11_subscale.xlsx")
 quest.sub = quest.sub[-c(1,4),]  # removing items not in teds and in these reduced networks
 
 # load functions ----
-source("qgraph.alt.R") # modified qgraph function: plots by avoiding highlighted edges to cross under other ones
+source("qgraph.alt.R") # modified qgraph function: plots by avoiding highlighted edges crossing under other ones
 source("support.functions.R") # support functions to qgraph.alt
 source("unfade.centre.nolegend.R") # unfading function
 
